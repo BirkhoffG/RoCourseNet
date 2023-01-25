@@ -8,6 +8,8 @@ from relax.module import PredictiveTrainingModule
 from relax.methods.base import BaseCFModule, BaseParametricCFModule, BasePredFnCFModule
 import argparse
 from .utils_configs import get_configs, DATASET_NAMES
+from jax.config import config
+config.parse_flags_with_absl()
 
 
 name2method = {

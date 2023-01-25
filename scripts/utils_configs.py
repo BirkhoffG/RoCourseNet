@@ -31,7 +31,7 @@ acs_configs = {
         "adv_lr": 0.03
     },
     "t_configs": {
-        'n_epochs': 50,
+        'n_epochs': 10,
         "batch_size": 128,
         # 'n_epochs': 10,
         'monitor_metrics': 'val/val_loss'
@@ -73,8 +73,8 @@ loan_configs = {
         "adv_lr": 0.03
     },
     "t_configs": {
-        'n_epochs': 50,
-        "batch_size": 256,
+        'n_epochs': 5,
+        "batch_size": 128,
         # 'n_epochs': 10,
         'monitor_metrics': 'val/val_loss'
     }, 

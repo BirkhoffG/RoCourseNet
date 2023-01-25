@@ -138,8 +138,8 @@ class BilevelAttacker(Attacker):
             x, y = batch
             for _ in range(self.k):
                 # inner unrolling steps
-                _x = self.apply_fn(x, x + delta, hard=False)
-                grads = jax.grad(self.pred_loss_fn)(params, rng_key, (_x, y), is_training=True)
+                x = self.apply_fn(x, x + delta, hard=False)
+                grads = jax.grad(self.pred_loss_fn)(params, rng_key, (x, y), is_training=True)
                 params, opt_state = grad_update(grads, params, opt_state, opt)
 
             loss = self.adv_loss_fn(params, rng_key, x, is_training=False)
@@ -155,7 +155,8 @@ class BilevelAttacker(Attacker):
             return (delta, params, opt_state, sub_key), None
 
         states = (delta, params, opt_state, rng_key)
-        (delta, params, opt_state, rng_key), _ = jax.lax.scan(f=attacker_step, init=states, xs=jnp.arange(self.n_steps))
+        (delta, params, opt_state, rng_key), _ = jax.lax.scan(
+            f=attacker_step, init=states, xs=jnp.arange(self.n_steps))
 
         # for i in range(self.n_steps):
         #     _, rng_key = random.split(rng_key)
