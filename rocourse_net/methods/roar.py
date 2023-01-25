@@ -3,27 +3,27 @@
 # %% auto 0
 __all__ = ['ROARConfig', 'ROAR']
 
-# %% ../../nbs/03_methods.roar.ipynb 3
-from cfnet.import_essentials import *
-from cfnet.interfaces import LocalCFExplanationModule
-from cfnet.datasets import TabularDataModule
-from cfnet.utils import validate_configs
-from cfnet.methods.vanilla import binary_cross_entropy
-from cfnet.training_module import grad_update, cat_normalize
+# %% ../../nbs/03_methods.roar.ipynb 2
+from relax.import_essentials import *
+from relax.data import TabularDataModule
+from relax.utils import validate_configs
+from relax.methods.vanilla import binary_cross_entropy
+from relax.methods.base import BaseCFModule, BaseParametricCFModule, BasePredFnCFModule
+from relax.utils import binary_cross_entropy, grad_update, cat_normalize
 from ..lime import LocalApprox
-from ..training_module import l_inf_proj
+from ..module import l_inf_proj
 from sklearn.utils import gen_even_slices
 from sklearn.utils.validation import _num_samples
 from joblib import effective_n_jobs
 
-# %% ../../nbs/03_methods.roar.ipynb 4
+# %% ../../nbs/03_methods.roar.ipynb 3
 def _pred_fn_approx(
     coef: jnp.DeviceArray, 
     x: jnp.DeviceArray
 ) -> jnp.DeviceArray:
     return 1 / (1 + jnp.exp(- x @ coef))
 
-# %% ../../nbs/03_methods.roar.ipynb 5
+# %% ../../nbs/03_methods.roar.ipynb 4
 def _roar(
     x: jnp.DeviceArray, # input
     coef: jnp.DeviceArray, # lime approx weight
@@ -90,7 +90,7 @@ def _roar(
         cf, cat_arrays, cat_idx, hard=True)
     return cf.reshape(-1)
 
-# %% ../../nbs/03_methods.roar.ipynb 6
+# %% ../../nbs/03_methods.roar.ipynb 5
 def _generate_local_exp(
     test_X: chex.ArrayBatched,
     pred_fn: Callable[[jnp.DeviceArray], jnp.DeviceArray],
@@ -128,9 +128,8 @@ def _generate_local_exp(
         )
     return jnp.array(coef_), jnp.array(intercept_)
     
-    
 
-# %% ../../nbs/03_methods.roar.ipynb 7
+# %% ../../nbs/03_methods.roar.ipynb 6
 class ROARConfig(BaseParser):
     max_delta: float = 0.1
     n_steps: int = 50
@@ -139,8 +138,8 @@ class ROARConfig(BaseParser):
     lr: float = 0.1
     seed: int = 42
 
-# %% ../../nbs/03_methods.roar.ipynb 8
-class ROAR(LocalCFExplanationModule):
+# %% ../../nbs/03_methods.roar.ipynb 7
+class ROAR(BaseCFModule):
     name = "ROAR"
 
     def __init__(
@@ -182,9 +181,15 @@ class ROAR(LocalCFExplanationModule):
         is_parallel: bool = False
     ) -> chex.ArrayBatched:
         print('generating local explanations via lime...')
+        X, _ = self.data_module.train_dataset[:]
+        self.cat_arrays = self.data_module.cat_encoder.categories_ \
+            if self.data_module._configs.discret_cols else []
+        self.cat_idx = self.data_module.cat_idx
         coef, intercept = _generate_local_exp(
-            test_X=X, pred_fn=pred_fn, train_X=self.X,
-            cat_arrays=self.cat_arrays, cat_idx=self.cat_idx, n_jobs=-1)
+            test_X=X, pred_fn=pred_fn, train_X=X,
+            cat_arrays=self.cat_arrays, 
+            cat_idx=self.cat_idx, n_jobs=-1
+        )
 
         def _generate_cf(x: jnp.DeviceArray, coef, intercept) -> jnp.ndarray:
             return self.generate_cf(x, coef, intercept)

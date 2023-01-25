@@ -3,13 +3,13 @@
 # %% auto 0
 __all__ = ['LimeExplanation', 'LimeTabularExplainer', 'LocalApprox']
 
-# %% ../nbs/02_lime.ipynb 2
-from cfnet.import_essentials import *
+# %% ../nbs/02_lime.ipynb 1
+from relax.import_essentials import *
 from lime.lime_base import LimeBase
 from functools import partial
 import sklearn
 
-# %% ../nbs/02_lime.ipynb 3
+# %% ../nbs/02_lime.ipynb 2
 class LimeExplanation(object):
     def __init__(self, intercept={}, local_exp={}, score={}, local_pred={}):
         self.intercept = intercept
@@ -25,7 +25,7 @@ class LimeExplanation(object):
             'local_pred': self.local_pred
         })
 
-# %% ../nbs/02_lime.ipynb 4
+# %% ../nbs/02_lime.ipynb 3
 class LimeTabularExplainer(object):
     def __init__(self, training_data):
         freq = np.sum(training_data, axis=0)
@@ -98,7 +98,7 @@ class LimeTabularExplainer(object):
             local_pred=local_pred
         )
 
-# %% ../nbs/02_lime.ipynb 5
+# %% ../nbs/02_lime.ipynb 4
 class LocalApprox(object):
     def __init__(self, train_X, cat_arrays, cat_idx):
         # self.explainer = LimeTabularExplainer(train_X, class_names=['0', '1'], discretize_continuous=False)

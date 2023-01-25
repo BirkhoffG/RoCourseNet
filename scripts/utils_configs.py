@@ -8,13 +8,13 @@ loan_configs = {
         "discret_cols": [
             "State", "Term", "UrbanRural", "LowDoc", "Sector_Points"
         ],
-        "batch_size": 128,
+        
     },
     "m_config": {
-        # model structure
-        "enc_sizes": [200,50],
-        "dec_sizes": [50],
-        "exp_sizes": [50],
+        # model structure    
+        "enc_sizes": [50,10],
+        "dec_sizes": [10],
+        "exp_sizes": [50, 50],
         "sizes": [50, 10, 50],
         "dropout_rate": 0.3,    
         # training module
@@ -30,6 +30,7 @@ loan_configs = {
     },
     "t_configs": {
         'n_epochs': 50,
+        "batch_size": 256,
         # 'n_epochs': 10,
         'monitor_metrics': 'val/val_loss'
     }, 
@@ -47,7 +48,7 @@ german_configs = {
         "discret_cols": [
             "Present residence", "Status", "History"
         ],
-        "batch_size": 256,
+        
     },
     "m_config": {
         # model structure
@@ -69,6 +70,7 @@ german_configs = {
     },
     "t_configs": {
         'n_epochs': 100,
+        "batch_size": 256,
         # 'n_epochs': 10,
         'monitor_metrics': 'val/val_loss'
     }, 
@@ -87,7 +89,7 @@ student_configs = {
             "G2", "G1", "higher", "goout", "Mjob", "Fjob", "health", 
             "freetime", "absences", "Walc", "famrel", "Medu", "Fedu"
         ],
-        "batch_size": 128,
+        
     },
     "m_config": {
         # model structure
@@ -110,6 +112,7 @@ student_configs = {
     "t_configs": {
         # 'n_epochs': 50,
         'n_epochs': 100,
+        "batch_size": 128,
         # 'n_epochs': 10,
         'monitor_metrics': 'val/val_loss'
     },
@@ -125,7 +128,7 @@ cov_configs = {
             "x1", "x2"
         ],
         "discret_cols": [],
-        "batch_size": 128,
+        
     },
     "m_config": {
         # model structure
@@ -147,6 +150,7 @@ cov_configs = {
     },
     "t_configs": {
         'n_epochs': 50,
+        "batch_size": 128,
         # 'n_epochs': 10,
         'monitor_metrics': 'val/val_loss'
     },
@@ -162,7 +166,6 @@ label_configs = {
             "x1", "x2"
         ],
         "discret_cols": [],
-        "batch_size": 128,
     },
     "m_config": {
         # model structure
@@ -184,6 +187,7 @@ label_configs = {
     },
     "t_configs": {
         'n_epochs': 50,
+        "batch_size": 128,
         # 'n_epochs': 10,
         'monitor_metrics': 'val/val_loss'
     },
