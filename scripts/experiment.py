@@ -26,6 +26,8 @@ def main(args):
     )
     m_configs, aux_configs = get_configs(args.data_name)
     m_configs.update({"random_perturbation": args.random})
+    m_configs.update({"adv_lr": args.adv_lr})
+    m_configs.update({"lr": args.lr})
     cf_module = name2method[args.method](m_configs)
 
     if isinstance(cf_module, BaseParametricCFModule):
@@ -81,6 +83,8 @@ if __name__ == "__main__":
         choices=name2method.keys(),
     )
     parser.add_argument("--random", type=bool, default=False)
+    parser.add_argument("--adv_lr", type=float, default=0.03)
+    parser.add_argument("--lr", type=float, default=0.003)
     args = parser.parse_args()
 
     main(args)
