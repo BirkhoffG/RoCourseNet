@@ -1,3 +1,46 @@
+from folktables.load_acs import state_list
+
+
+acs_configs = {
+    "data_config": {
+        "data_name": "census",
+        "continous_cols": [
+            "AGEP", "OCCP", "POBP", "RELP", "WKHP"
+        ],
+        "discret_cols": [
+            "COW", "SCHL", "MAR", "SEX", "RAC1P"
+        ],
+        
+    },
+    "m_config": {
+        # model structure
+        "enc_sizes": [100,50],
+        "dec_sizes": [20],
+        "exp_sizes": [20],
+        "dropout_rate": 0.3,
+        "sizes": [50, 10, 50],
+        # training module
+        'lr': 0.003,
+        "lambda_1": 1.0,
+        "lambda_3": 0.1,
+        "lambda_2": 1.0,
+        # adv training
+        "epsilon": 0.1,
+        "n_steps": 10,
+        "k": 2,
+        "adv_lr": 0.03
+    },
+    "t_configs": {
+        'n_epochs': 50,
+        "batch_size": 128,
+        # 'n_epochs': 10,
+        'monitor_metrics': 'val/val_loss'
+    }, 
+    'data_dir_list': {
+        f"assets/data/acs/2018_{state}.csv" for state in state_list
+    }
+}
+
 
 loan_configs = {
     "data_config": {
@@ -198,6 +241,7 @@ label_configs = {
 
 
 config_map = {
+    'acs': acs_configs,
     'loan': loan_configs,
     'german_credit': german_configs,
     'student': student_configs,
