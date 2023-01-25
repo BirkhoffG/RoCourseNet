@@ -38,7 +38,8 @@ acs_configs = {
     }, 
     'data_dir_list': {
         f"assets/data/acs/2018_{state}.csv" for state in state_list
-    }
+    },
+    'use_fast': True,
 }
 
 
