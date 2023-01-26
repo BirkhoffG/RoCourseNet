@@ -110,9 +110,14 @@ class BilevelAttacker(Attacker):
             key=rng_key, shape=x.shape, 
             minval=-self.epsilon, maxval=self.epsilon)
         # create optimizer
-        opt = optax.adam(learning_rate=self.adv_lr)
+        opt = optax.chain(
+            optax.clip(1.0),
+            optax.adam(learning_rate=self.adv_lr)
+        )
+        
         opt_state = opt.init(params)
 
+        @partial(jax.jit, static_argnames=['opt'])
         def attacker_fn(
             delta: jnp.ndarray,
             params: hk.Params,
@@ -138,8 +143,8 @@ class BilevelAttacker(Attacker):
             x, y = batch
             for _ in range(self.k):
                 # inner unrolling steps
-                x = self.apply_fn(x, x + delta, hard=False)
-                grads = jax.grad(self.pred_loss_fn)(params, rng_key, (x, y), is_training=True)
+                _x = self.apply_fn(x, x + delta, hard=False)
+                grads = jax.grad(self.pred_loss_fn)(params, rng_key, (_x, y), is_training=False)
                 params, opt_state = grad_update(grads, params, opt_state, opt)
 
             loss = self.adv_loss_fn(params, rng_key, x, is_training=False)
@@ -150,6 +155,8 @@ class BilevelAttacker(Attacker):
             rng_key, sub_key = random.split(rng_key)
             g, (params, opt_state) = jax.grad(attacker_fn, has_aux=True)(
                 delta, params, opt_state, rng_key, (x, y), opt)
+
+            g = jnp.clip(g, -1.0, 1.0)
             delta = delta + alpha * jnp.sign(g)
             delta = l_inf_proj(delta, self.epsilon, self.cat_idx)
             return (delta, params, opt_state, sub_key), None

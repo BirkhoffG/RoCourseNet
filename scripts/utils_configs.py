@@ -31,14 +31,16 @@ acs_configs = {
         "adv_lr": 0.03
     },
     "t_configs": {
-        'n_epochs': 10,
+        'n_epochs': 15,
         "batch_size": 128,
         # 'n_epochs': 10,
         'monitor_metrics': 'val/val_loss'
     }, 
-    'data_dir_list': {
-        f"assets/data/acs/2018_{state}.csv" for state in state_list
-    },
+    'data_dir_list': [
+        # f"assets/data/acs/2018_{state}.csv" for state in state_list
+        f"assets/data/acs/{year}_CA.csv" for year in range(2014, 2019)
+        # "assets/data/acs/2018_AR.csv"
+    ],
     'use_fast': True,
 }
 

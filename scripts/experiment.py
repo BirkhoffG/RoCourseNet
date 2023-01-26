@@ -9,7 +9,9 @@ from relax.methods.base import BaseCFModule, BaseParametricCFModule, BasePredFnC
 import argparse
 from .utils_configs import get_configs, DATASET_NAMES
 from jax.config import config
-config.parse_flags_with_absl()
+
+
+config.update("jax_enable_x64", True)
 
 
 name2method = {
@@ -21,6 +23,8 @@ name2method = {
 
 
 def main(args):
+    config.update("jax_debug_nans", args.debug_nans)        
+
     logger = ExperimentLoggerWanbConfigs(
         project_name='kdd-rocoursenet',
         user_name='birkhoffg',
@@ -87,6 +91,8 @@ if __name__ == "__main__":
     parser.add_argument("--random", type=bool, default=False)
     parser.add_argument("--adv_lr", type=float, default=0.03)
     parser.add_argument("--lr", type=float, default=0.003)
+    parser.add_argument("--debug_nans", type=bool, default=False)
+
     args = parser.parse_args()
 
     main(args)

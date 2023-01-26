@@ -136,7 +136,7 @@ def train_models(
         params, opt_state = training_module.init_net_opt(
             dm, random.PRNGKey(42)
         )
-        
+        print(f'data_dir: {data_dir}')
         params, opt_state = train_model_with_states(
             training_module, params, opt_state, dm, t_configs
         )
