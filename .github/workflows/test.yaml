@@ -1,12 +1,9 @@
 name: CI
-on:  [workflow_dispatch, pull_request, push]
-
-name: CI
 on:  
   workflow_dispatch:
   pull_request:
   push:
-    branches: [master]
+    branches: [master, main]
 
 jobs:
   nbdev-sync:
