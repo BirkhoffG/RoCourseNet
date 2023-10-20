@@ -118,7 +118,7 @@ german_configs = {
         'n_epochs': 100,
         "batch_size": 256,
         # 'n_epochs': 10,
-        'monitor_metrics': 'val/val_loss'
+        # 'monitor_metrics': None#'val/val_loss'
     }, 
     'data_dir_list': {
         "assets/data/german_credit/org.csv", "assets/data/german_credit/upt.csv"
@@ -198,7 +198,7 @@ cov_configs = {
         'n_epochs': 50,
         "batch_size": 128,
         # 'n_epochs': 10,
-        'monitor_metrics': 'val/val_loss'
+        'monitor_metrics': None
     },
     "data_dir_list": [
         "assets/data/covarient/org.csv", "assets/data/covarient/upt.csv"
